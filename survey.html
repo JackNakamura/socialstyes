@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>対人関係スタイル分析</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #121212; color: #ffffff; text-align: center; padding: 20px; }
+        h2 { font-size: 24px; }
+        p { font-size: 16px; }
+        .question-container { max-width: 600px; margin: 0 auto; background: #1e1e1e; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); }
+        .question { margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; }
+        .options { display: flex; align-items: center; justify-content: center; gap: 15px; }
+        .options label { background: #333; padding: 10px 20px; border-radius: 5px; cursor: pointer; transition: 0.3s; text-align: center; }
+        .options input { display: none; }
+        .options label:hover, .options input:checked + label { background: #6200ea; }
+        button { background: #6200ea; color: #fff; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; transition: 0.3s; margin-top: 20px; }
+        button:hover { background: #3700b3; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <h2>対人関係スタイル分析</h2>
+    <p>いくつかの質問が対になって示されています。それぞれの対について4つの〇の中から、あなたに最も当てはまると思われる〇を選択してください。全38問について選択してください。</p>
+    <div class="question-container" id="questions"></div>
+    <button onclick="calculateScores()">スコア計算</button>
+    <div id="results" class="hidden">
+        <h3>スコア結果</h3>
+        <p>aの合計: <span id="scoreA">0</span></p>
+        <p>bの合計: <span id="scoreB">0</span></p>
+    </div>
+    
+    <script>
+        const questions = [];
+        const questionPairs = [
+            ["指揮を取る", "追従する"],
+            ["のびのびしている", "制御する"],
+            ["積極的", "消極的"],
+            ["現実的", "理想的"],
+            ["競争的", "協調的"],
+            ["直感的", "分析的"],
+            ["柔軟性がある", "慎重である"],
+            ["感情を表に出す", "冷静である"],
+            ["支配的", "従順"],
+            ["率直", "控えめ"],
+            ["創造的", "分析的"],
+            ["指導的", "協力的"],
+            ["大胆", "慎重"],
+            ["自信がある", "遠慮する"],
+            ["行動的", "計画的"],
+            ["楽観的", "慎重"],
+            ["親しみやすい", "静か"],
+            ["説得力がある", "協調性がある"],
+            ["決断力がある", "慎重に考える"],
+            ["即断即決", "じっくり考える"],
+            ["発言が多い", "聞き役"],
+            ["自由", "規律"],
+            ["冒険的", "慎重"],
+            ["挑戦的", "安全志向"],
+            ["強引", "柔軟"],
+            ["直情的", "論理的"],
+            ["行動力がある", "計画的"],
+            ["自立的", "協調的"],
+            ["目標志向", "過程重視"],
+            ["感情表現豊か", "冷静沈着"],
+            ["競争を好む", "協調を重視"],
+            ["決断が早い", "慎重に検討"],
+            ["強い意志", "柔軟な適応"],
+            ["率直な発言", "控えめな発言"],
+            ["責任を持つ", "助言を求める"],
+            ["リスクを取る", "リスクを避ける"],
+            ["行動第一", "熟考第一"],
+            ["革新を好む", "伝統を守る"]
+        ];
+
+        questionPairs.forEach((pair, index) => {
+            questions.push({ id: index + 1, text1: pair[0], text2: pair[1], group: index % 2 === 0 ? "a" : "b", dummy: false });
+        });
+
+        const questionContainer = document.getElementById("questions");
+        questions.forEach(q => {
+            const div = document.createElement("div");
+            div.classList.add("question");
+            div.innerHTML = `
+                <span>${q.id}. ${q.text1}</span>
+                <div class="options">
+                    <input type="radio" id="q${q.id}_1" name="q${q.id}" value="1"><label for="q${q.id}_1">1</label>
+                    <input type="radio" id="q${q.id}_2" name="q${q.id}" value="2"><label for="q${q.id}_2">2</label>
+                    <input type="radio" id="q${q.id}_3" name="q${q.id}" value="3"><label for="q${q.id}_3">3</label>
+                    <input type="radio" id="q${q.id}_4" name="q${q.id}" value="4"><label for="q${q.id}_4">4</label>
+                </div>
+                <span>${q.text2}</span>
+            `;
+            questionContainer.appendChild(div);
+        });
+        
+        function calculateScores() {
+            let scoreA = 0, scoreB = 0;
+            
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+                if (selected) {
+                    const value = parseInt(selected.value);
+                    if (q.group === "a") {
+                        scoreA += value;
+                    } else if (q.group === "b") {
+                        scoreB += value;
+                    }
+                }
+            });
+            
+            document.getElementById("scoreA").textContent = scoreA;
+            document.getElementById("scoreB").textContent = scoreB;
+            document.getElementById("results").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
